@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A1017"><meta name="mobile-web-app-capable" content="yes">
+<title>Armário do Everton</title>
+<style>
+:root{
+ --bg:#0a1017; --surface:#111a24; --surface2:#172331; --line:#263746;
+ --text:#f6f8fb; --muted:#9aaaba; --blue:#2f80ed; --gold:#f5b942;
+ --green:#37b77c; --red:#e85d67; --radius:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#05090d;color:var(--text);font-family:Inter,Roboto,Arial,sans-serif}
+.app{max-width:520px;min-height:100vh;margin:auto;background:linear-gradient(160deg,#0a1017,#101b27);position:relative;padding-bottom:86px}
+.status{height:32px;padding:9px 18px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:700}
+.top{padding:8px 18px 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;gap:10px;align-items:center}.hanger{font-size:30px}.logo b{display:block;font-size:17px;letter-spacing:.4px}.logo small{color:var(--gold);font-size:10px;letter-spacing:2px}
+.avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#b87c1d);color:#1b1206;font-size:21px}
+.page{display:none;padding:0 16px}.page.active{display:block}
+.hero{border:1px solid var(--line);border-radius:28px;padding:21px;background:linear-gradient(135deg,#16293b,#101820);overflow:hidden;position:relative}
+.hero:after{content:"👔";position:absolute;right:-5px;bottom:-28px;font-size:130px;opacity:.08}
+.hero h1{margin:0 0 7px;font-size:27px}.hero p{margin:0;color:var(--muted);line-height:1.45}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.stat{padding:12px 6px;border-radius:15px;background:#0b1219;text-align:center;border:1px solid #20303e}.stat b{display:block;color:var(--gold);font-size:20px}.stat span{font-size:10px;color:var(--muted)}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:23px 2px 12px}.section-title h2{font-size:19px;margin:0}.link{color:#75b4ff;font-size:13px;font-weight:700}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quick-card{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:16px;min-height:115px}.quick-card i{font-style:normal;font-size:28px}.quick-card b{display:block;margin-top:10px}.quick-card small{color:var(--muted);display:block;margin-top:5px;font-size:11px}
+.today{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:15px}.today-row{display:flex;gap:8px;overflow:auto}.mini{min-width:82px;height:98px;border-radius:15px;background:#0b1219;border:1px solid #243443;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:31px}.mini span{font-size:10px;color:var(--muted);margin-top:7px;text-align:center;padding:0 4px}
+.search{width:100%;border-radius:16px;padding:14px 15px;background:#0b1219;border:1px solid var(--line);color:white;margin-bottom:13px;outline:none}
+.chips{display:flex;gap:8px;overflow:auto;margin-bottom:14px}.chip{border:1px solid var(--line);background:#111b26;color:var(--muted);padding:9px 13px;border-radius:99px;white-space:nowrap;font-size:12px;font-weight:700}.chip.active{background:var(--gold);border-color:var(--gold);color:#241808}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.cloth{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:10px;position:relative;min-height:176px}.cloth .visual{height:92px;border-radius:13px;background:linear-gradient(145deg,#0b1219,#172331);display:grid;place-items:center;font-size:54px;overflow:hidden}.cloth img{width:100%;height:100%;object-fit:cover}.cloth b{font-size:13px;display:block;margin-top:9px;line-height:1.25}.cloth small{font-size:10px;color:var(--muted);display:block;margin-top:5px}.delete{position:absolute;right:8px;top:8px;width:27px;height:27px;border-radius:50%;border:0;background:#2a1820;color:#ff8e98;font-size:17px}
+.fab{position:fixed;bottom:97px;right:max(22px,calc((100vw - 520px)/2 + 18px));width:57px;height:57px;border-radius:50%;border:0;background:var(--gold);color:#1d1609;font-size:31px;box-shadow:0 10px 25px #0008;z-index:4}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);height:78px;background:#0c131bF5;backdrop-filter:blur(15px);border-top:1px solid var(--line);display:flex;justify-content:space-around;z-index:5;padding-top:8px}.nav button{border:0;background:transparent;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:62px}.nav i{font-style:normal;font-size:21px}.nav button.active{color:var(--gold)}
+.generator{background:linear-gradient(145deg,#17293a,#101820);border:1px solid var(--line);border-radius:25px;padding:18px}.occasion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.occasion{border:1px solid var(--line);background:#0c141d;border-radius:15px;padding:12px 6px;text-align:center;color:var(--muted);font-size:11px}.occasion.active{border-color:var(--gold);background:#2b2417;color:#fff}.occasion i{font-style:normal;display:block;font-size:25px;margin-bottom:6px}
+.bigbtn{width:100%;margin-top:16px;padding:16px;border:0;border-radius:17px;background:linear-gradient(135deg,var(--gold),#ffd36d);font-size:15px;font-weight:800;color:#1e1708}
+.look-result{margin-top:15px}.look-card{background:var(--surface);border:1px solid var(--line);border-radius:25px;padding:16px}.look-head{display:flex;justify-content:space-between;align-items:center}.look-title{font-size:18px;font-weight:800}.look-pieces{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.piece{background:#0b1219;border:1px solid #243443;border-radius:15px;padding:12px;min-height:82px}.piece i{font-style:normal;font-size:28px;display:block}.piece b{font-size:11px;display:block;margin-top:6px;line-height:1.2}.piece small{font-size:9px;color:var(--muted)}
+.actions{display:flex;gap:8px;margin-top:14px}.actions button{flex:1;padding:13px;border-radius:14px;border:1px solid var(--line);background:#182532;color:white;font-weight:700}.actions button:last-child{background:var(--blue);border-color:var(--blue)}
+.favorites .fav{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:10px}.fav-top{display:flex;justify-content:space-between}.fav-pieces{display:flex;gap:7px;margin-top:10px}.fav-pieces span{background:#0a1118;border:1px solid #22313f;border-radius:11px;padding:8px;font-size:20px}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.show{display:flex}.sheet{width:min(520px,100%);max-height:91vh;overflow:auto;background:#111b26;border-radius:28px 28px 0 0;padding:20px}.handle{width:42px;height:5px;background:#3b4a58;border-radius:10px;margin:0 auto 15px}.sheet h2{margin:5px 0 18px}.field label{font-size:12px;color:var(--muted);display:block;margin:12px 0 5px}.field input,.field select{width:100%;padding:14px;border-radius:14px;border:1px solid var(--line);background:#0b1219;color:white;outline:none}.photo-preview{height:140px;border:2px dashed #334657;border-radius:18px;margin:10px 0;display:grid;place-items:center;color:var(--muted);overflow:hidden}.photo-preview img{width:100%;height:100%;object-fit:cover}
+.empty{padding:40px 10px;text-align:center;color:var(--muted)}.toast{position:fixed;top:42px;left:50%;transform:translateX(-50%) translateY(-100px);background:#223445;border:1px solid #3a5266;padding:12px 18px;border-radius:99px;z-index:30;transition:.3s;font-size:13px}.toast.show{transform:translateX(-50%) translateY(0)}
+.plan-day{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}.daynum{width:44px;height:44px;border-radius:13px;background:#0b1219;display:grid;place-items:center;font-weight:800;color:var(--gold)}.plan-day b{display:block}.plan-day small{color:var(--muted)}
+@media(min-width:700px){body{padding:0}.app{box-shadow:0 0 60px #000}}
+
+/* Premium wardrobe features */
+.look-photo{height:190px;border-radius:20px;background:linear-gradient(145deg,#0b1219,#1b2b39);border:1px solid #2b4051;display:flex;align-items:center;justify-content:center;gap:10px;margin:15px 0;padding:15px}
+.look-photo .model{font-size:105px;filter:drop-shadow(0 8px 8px #0008)}
+.rating{display:flex;gap:8px;margin-top:12px}.rating button{flex:1;border:1px solid var(--line);border-radius:13px;padding:12px;background:#0c141d;color:white;font-size:12px;font-weight:700}.rating button.selected{outline:2px solid var(--gold)}
+.score{display:inline-block;background:#183326;color:#8fe2b8;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:800}
+.photo-tip{background:#132333;border:1px dashed #426078;border-radius:16px;padding:14px;margin:10px 0;color:#b6c7d5;font-size:12px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="status"><span id="clock">20:40</span><span>◉ ◔ ▰</span></div>
+<div class="top"><div class="logo"><div class="hanger">♧</div><div><small>ARMÁRIO DO</small><b>EVERTON</b></div></div><div class="avatar">😎</div></div>
+
+<section id="home" class="page active">
+ <div class="hero"><h1>Boa noite, Everton! 👋</h1><p>Seu armário está pronto. Escolha uma ocasião e encontre o look ideal usando somente suas roupas.</p>
+ <div class="stats"><div class="stat"><b id="statPieces">29</b><span>peças</span></div><div class="stat"><b id="statFavs">0</b><span>favoritos</span></div><div class="stat"><b>5</b><span>ocasiões</span></div></div></div>
+ <div class="section-title"><h2>Acesso rápido</h2></div>
+ <div class="quick">
+  <div class="quick-card" onclick="openPage('wardrobe')"><i>👕</i><b>Meu Armário</b><small>Organize suas roupas</small></div>
+  <div class="quick-card" onclick="openPage('generator')"><i>✨</i><b>Gerar Look</b><small>Combinações inteligentes</small></div>
+  <div class="quick-card" onclick="openPage('favorites')"><i>❤️</i><b>Favoritos</b><small>Seus melhores looks</small></div>
+  <div class="quick-card" onclick="openPage('planner')"><i>📅</i><b>Planejador</b><small>Organize a semana</small></div>
+  <div class="quick-card" onclick="openPage('tryon')"><i>🪞</i><b>Experimentar</b><small>Visualizar o look</small></div>
+ </div>
+ <div class="section-title"><h2>Seu armário</h2><span class="link" onclick="openPage('wardrobe')">Ver tudo</span></div>
+ <div class="today"><div class="today-row" id="homeMini"></div></div>
+</section>
+
+<section id="wardrobe" class="page">
+ <div class="section-title"><h2>Meu Armário</h2><span class="link" id="pieceCount"></span></div>
+ <input class="search" id="search" placeholder="🔎 Buscar roupa ou cor..." oninput="renderWardrobe()">
+ <div class="chips" id="chips"></div><div class="grid" id="wardrobeGrid"></div>
+</section>
+
+<section id="generator" class="page">
+ <div class="section-title"><h2>✨ Gerador de Looks</h2></div>
+ <div class="generator"><p style="color:var(--muted);margin-top:0;font-size:13px">Selecione a ocasião. O app combina apenas peças cadastradas no seu armário.</p>
+ <div class="occasion-grid" id="occasionGrid"></div><button class="bigbtn" onclick="generateLook()">🎲 GERAR NOVO LOOK</button></div>
+ <div class="look-result" id="lookResult"><div class="empty">Seu próximo look aparece aqui. 🔥</div></div>
+</section>
+
+<section id="favorites" class="page"><div class="section-title"><h2>❤️ Meus Favoritos</h2><span class="link" id="favCount"></span></div><div class="favorites" id="favoritesList"></div></section>
+
+<section id="planner" class="page"><div class="section-title"><h2>📅 Planejador semanal</h2><span class="link">Esta semana</span></div><div id="plannerList"></div></section>
+
+<button class="fab" onclick="openModal()">＋</button>
+<div class="nav">
+<button class="active" data-page="home" onclick="openPage('home')"><i>⌂</i>Início</button>
+<button data-page="wardrobe" onclick="openPage('wardrobe')"><i>♧</i>Armário</button>
+<button data-page="generator" onclick="openPage('generator')"><i>✨</i>Looks</button>
+<button data-page="favorites" onclick="openPage('favorites')"><i>♡</i>Favoritos</button>
+<button data-page="planner" onclick="openPage('planner')"><i>▣</i>Plano</button>
+</div>
+</div>
+
+
+<section id="tryon" class="page">
+ <div class="section-title"><h2>🪞 Experimentar Look</h2><span class="link">Premium</span></div>
+ <div class="generator">
+   <p style="color:var(--muted);font-size:13px;margin-top:0">Gere um look e visualize uma representação antes de vestir. Quando você adicionar fotos, elas aparecerão no seu armário.</p>
+   <div class="photo-tip">📷 <b>Depois:</b> adicione as fotos reais das suas roupas pelo botão <b>＋</b>. O app já está preparado para organizar cada imagem por categoria.</div>
+   <button class="bigbtn" onclick="openPage('generator')">✨ GERAR UM LOOK PRIMEIRO</button>
+ </div>
+ <div id="tryonResult" class="empty">Ainda não há um look para experimentar.</div>
+</section>
+
+<div class="modal" id="modal"><div class="sheet"><div class="handle"></div><h2>➕ Adicionar nova roupa</h2>
+<div class="field"><label>Categoria</label><select id="newCategory"><option>Camiseta</option><option>Calça</option><option>Bermuda</option><option>Blusa / Casaco</option><option>Tênis</option><option>Acessório</option></select></div>
+<div class="field"><label>Nome da peça</label><input id="newName" placeholder="Ex.: Camiseta polo azul"></div>
+<div class="field"><label>Cor</label><input id="newColor" placeholder="Ex.: Azul-marinho"></div>
+<div class="field"><label>Foto da roupa</label><input type="file" id="newPhoto" accept="image/*" onchange="previewPhoto(this)"></div>
+<div class="photo-preview" id="photoPreview">📷 Toque acima para escolher uma foto</div>
+<button class="bigbtn" onclick="addPiece()">SALVAR NO ARMÁRIO</button>
+<button style="width:100%;margin-top:10px;background:transparent;color:var(--muted);border:0;padding:12px" onclick="closeModal()">Cancelar</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const initial=[
+["Calça","Calça alfaiataria bege","Bege"],["Calça","Calça alfaiataria azul-marinho","Azul-marinho"],["Calça","Calça jeans azul-claro","Azul-claro"],["Calça","Calça cargo marrom","Marrom"],
+["Camiseta","Camisa básica branca","Branca"],["Camiseta","Camisa básica preta","Preta"],["Camiseta","Camisa básica vermelha","Vermelha"],["Camiseta","Camisa básica azul-marinho","Azul-marinho"],["Camiseta","Camisa básica marrom","Marrom"],["Camiseta","Camisa básica cinza","Cinza"],["Camiseta","Camisa básica bordô","Bordô"],["Camiseta","Camisa básica verde-militar","Verde-militar"],["Camiseta","Camisa básica laranja","Laranja"],["Camiseta","Camisa básica verde-claro","Verde-claro"],["Camiseta","Camisa básica bege","Bege"],["Camiseta","Camisa básica rosa","Rosa"],["Camiseta","Regata preta","Preta"],["Camiseta","Camisa básica texturizada preta","Preta"],["Camiseta","Camisa básica texturizada branca","Branca"],["Camiseta","Camisa básica texturizada vinho","Vinho"],
+["Bermuda","Bermuda de linho branca","Branca"],["Bermuda","Bermuda de linho listrada branca e marrom","Branco e marrom"],["Bermuda","Bermuda de linho verde-militar","Verde-militar"],["Bermuda","Bermuda de linho off-white","Off-white"],["Bermuda","Bermuda de alfaiataria bege","Bege"],
+["Blusa / Casaco","Bomber preta","Preta"],["Blusa / Casaco","Blazer chumbo","Chumbo"],["Tênis","Tênis básico branco","Branco"],["Tênis","Tênis básico preto","Preto"]
+].map((p,i)=>({id:"p"+i,category:p[0],name:p[1],color:p[2],photo:""}));
+let clothes=JSON.parse(localStorage.getItem("AE_wardrobe")||"null")||initial;
+let favorites=JSON.parse(localStorage.getItem("AE_favorites")||"[]")||[];
+let selectedCat="Todos",selectedOccasion="Casual",pendingPhoto="";
+const icons={"Camiseta":"👕","Calça":"👖","Bermuda":"🩳","Blusa / Casaco":"🧥","Tênis":"👟","Acessório":"⌚"};
+const occasions=[["Trabalho / Estrada","🚛"],["Casual","😎"],["Encontro","❤️"],["Noite","🌙"],["Elegante","👔"],["Dia quente","☀️"]];
+function persist(){localStorage.setItem("AE_wardrobe",JSON.stringify(clothes));localStorage.setItem("AE_favorites",JSON.stringify(favorites))}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
+function openPage(id){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));renderAll()}
+function openModal(){document.getElementById("modal").classList.add("show")}
+function closeModal(){document.getElementById("modal").classList.remove("show");pendingPhoto="";document.getElementById("photoPreview").textContent="📷 Toque acima para escolher uma foto"}
+function previewPhoto(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{pendingPhoto=e.target.result;document.getElementById("photoPreview").innerHTML=`<img src="${pendingPhoto}">`};r.readAsDataURL(f)}
+function addPiece(){const n=document.getElementById("newName").value.trim(),c=document.getElementById("newColor").value.trim(),cat=document.getElementById("newCategory").value;if(!n){toast("Digite o nome da roupa.");return}clothes.push({id:"p"+Date.now(),category:cat,name:n,color:c||"Não informado",photo:pendingPhoto});persist();document.getElementById("newName").value="";document.getElementById("newColor").value="";document.getElementById("newPhoto").value="";closeModal();renderAll();openPage("wardrobe");toast("Nova roupa adicionada! 🔥")}
+function removePiece(id){if(confirm("Remover esta peça do armário?")){clothes=clothes.filter(p=>p.id!==id);persist();renderAll();toast("Peça removida.")}}
+function renderHome(){document.getElementById("statPieces").textContent=clothes.length;document.getElementById("statFavs").textContent=favorites.length;document.getElementById("homeMini").innerHTML=clothes.slice(0,5).map(p=>`<div class="mini">${p.photo?`<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`:icons[p.category]}<span>${p.name.replace(/^(Camisa básica |Calça )/,"").slice(0,15)}</span></div>`).join("")}
+function renderWardrobe(){const cats=["Todos",...new Set(clothes.map(p=>p.category))];document.getElementById("chips").innerHTML=cats.map(c=>`<button class="chip ${selectedCat===c?"active":""}" onclick="selectedCat='${c}';renderWardrobe()">${c}</button>`).join("");let q=(document.getElementById("search").value||"").toLowerCase();let list=clothes.filter(p=>(selectedCat==="Todos"||p.category===selectedCat)&&(`${p.name} ${p.color}`.toLowerCase().includes(q)));document.getElementById("pieceCount").textContent=`${clothes.length} peças`;document.getElementById("wardrobeGrid").innerHTML=list.map(p=>`<div class="cloth"><button class="delete" onclick="removePiece('${p.id}')">×</button><div class="visual">${p.photo?`<img src="${p.photo}">`:icons[p.category]}</div><b>${p.name}</b><small>${p.category} • ${p.color}</small></div>`).join("")||'<div class="empty">Nenhuma peça encontrada.</div>'}
+function renderOccasions(){document.getElementById("occasionGrid").innerHTML=occasions.map(([n,i])=>`<div class="occasion ${selectedOccasion===n?"active":""}" onclick="selectedOccasion='${n}';renderOccasions()"><i>${i}</i>${n}</div>`).join("")}
+function choose(cat,filter){let a=clothes.filter(p=>p.category===cat&&(filter?filter(p):true));return a.length?a[Math.floor(Math.random()*a.length)]:null}
+function generateLook(){
+let top,bottom,layer=null,shoe=choose("Tênis");
+if(selectedOccasion==="Elegante"){top=choose("Camiseta",p=>/branca|preta|bege|vinho|azul-marinho/i.test(p.color));bottom=choose("Calça",p=>/alfaiataria/i.test(p.name));layer=clothes.find(p=>/Blazer/i.test(p.name))}
+else if(selectedOccasion==="Dia quente"){top=choose("Camiseta");bottom=choose("Bermuda")}
+else if(selectedOccasion==="Encontro"){top=choose("Camiseta",p=>/texturizada|bordô|vinho|preta|branca/i.test(p.name));bottom=choose("Calça");layer=Math.random()>.55?clothes.find(p=>/Blazer|Bomber/i.test(p.name)):null}
+else if(selectedOccasion==="Noite"){top=choose("Camiseta",p=>/preta|bordô|vinho|azul-marinho/i.test(p.color));bottom=choose("Calça");layer=clothes.find(p=>/Bomber/i.test(p.name))}
+else if(selectedOccasion==="Trabalho / Estrada"){top=choose("Camiseta",p=>/preta|cinza|azul-marinho|verde-militar|marrom/i.test(p.color));bottom=choose("Calça");layer=Math.random()>.55?clothes.find(p=>/Bomber/i.test(p.name)):null}
+else {top=choose("Camiseta");bottom=Math.random()>.55?choose("Calça"):choose("Bermuda")}
+let pieces=[top,bottom,layer,shoe].filter(Boolean);if(pieces.length<3){toast("Adicione mais peças ao armário.");return}
+let look={id:"l"+Date.now(),occasion:selectedOccasion,pieces:pieces.map(p=>p.id),date:new Date().toLocaleDateString("pt-BR")};window.currentLook=look;
+const lookHtml=`<div class="look-card"><div class="look-head"><div><div class="look-title">${selectedOccasion}</div><small style="color:var(--muted)">Combinação criada usando suas próprias peças</small></div><span class="score">🔥 COMBINAÇÃO</span></div><div class="look-photo"><span class="model">🧍</span><div style="font-size:34px">👕<br>👖<br>👟</div></div><div class="look-pieces">${pieces.map(p=>`<div class="piece"><i>${icons[p.category]}</i><b>${p.name}</b><small>${p.color}</small></div>`).join("")}</div><div class="rating"><button onclick="rateLook('excelente',this)">🔥 Excelente</button><button onclick="rateLook('gostei',this)">👍 Gostei</button><button onclick="rateLook('nao',this)">❌ Não gostei</button></div><div class="actions"><button onclick="generateLook()">↻ Outro</button><button onclick="saveCurrentLook()">♡ Salvar</button></div></div>`;document.getElementById("lookResult").innerHTML=lookHtml;document.getElementById("tryonResult").innerHTML=lookHtml}
+function rateLook(rating,button){document.querySelectorAll(".rating button").forEach(b=>b.classList.remove("selected"));button.classList.add("selected");if(window.currentLook){window.currentLook.rating=rating;}toast(rating==="excelente"?"Esse estilo será priorizado! 🔥":rating==="gostei"?"Boa escolha! 👍":"Vamos evitar combinações parecidas.");}
+function saveCurrentLook(){if(!window.currentLook)return;if(!favorites.some(x=>JSON.stringify(x.pieces)===JSON.stringify(window.currentLook.pieces))){favorites.unshift(window.currentLook);persist();toast("Look salvo nos favoritos ❤️")}else toast("Esse look já está salvo.");renderAll()}
+function renderFavorites(){document.getElementById("favCount").textContent=`${favorites.length} looks`;document.getElementById("favoritesList").innerHTML=favorites.length?favorites.map(l=>{let ps=l.pieces.map(id=>clothes.find(p=>p.id===id)).filter(Boolean);return `<div class="fav"><div class="fav-top"><div><b>${l.occasion}</b><small style="display:block;color:var(--muted);margin-top:3px">${l.date}</small></div><button style="background:#281820;color:#ff8e98;border:0;border-radius:10px;padding:8px" onclick="deleteFav('${l.id}')">Excluir</button></div><div class="fav-pieces">${ps.map(p=>`<span title="${p.name}">${icons[p.category]}</span>`).join("")}</div></div>`}).join(""):'<div class="empty">Ainda não há looks favoritos.<br>Gere um look e salve aqui. ❤️</div>'}
+function deleteFav(id){favorites=favorites.filter(x=>x.id!==id);persist();renderAll();toast("Look removido.")}
+function renderPlanner(){let days=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];document.getElementById("plannerList").innerHTML=days.map((d,i)=>{let l=favorites[i%Math.max(favorites.length,1)];return `<div class="plan-day"><div class="daynum">${i+1}</div><div><b>${d}</b><small>${l?l.occasion:"Escolha um look favorito"}</small></div><span style="margin-left:auto;font-size:21px">${l?"👔":"＋"}</span></div>`}).join("")}
+function renderAll(){renderHome();renderWardrobe();renderOccasions();renderFavorites();renderPlanner()}
+function updateClock(){let d=new Date();document.getElementById("clock").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}updateClock();setInterval(updateClock,30000);renderAll();
+</script>
+</body>
+</html>
